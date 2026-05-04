@@ -1,0 +1,19 @@
+{
+  "name": "backend-program",
+  "version": "1.0.0",
+  "description": "deploy backend code without learning basic code ",
+  "keywords": [
+    "chai",
+    "node"
+  ],
+  "license": "ISC",
+  "author": "Ramit Sonar",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
