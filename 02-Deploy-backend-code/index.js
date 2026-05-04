@@ -3,7 +3,7 @@ require('dotenv').config()
 const express = require('express')
 // import express from "express" same as above line
 const app = express()
-const port =process.env.PORT || 300
+const port =process.env.PORT || 3000
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
