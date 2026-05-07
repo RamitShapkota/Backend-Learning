@@ -6,7 +6,7 @@ const app = express();
 
 const port = process.env.PORT || 5000;
 
-
+app.use(express.static('dist'));  //middleware
 
 // app.get("/" , (req,res) => {
 //     res.send("server is ready");
@@ -38,6 +38,11 @@ app.get("/api/jokes",(req,res)=>{
   },
   {
     id: 5,
+    title: 'The Coffee',
+    content: 'Java developers never drink decaf because they can’t handle the lack of "Beans."'
+  },
+  {
+    id: 6,
     title: 'The Coffee',
     content: 'Java developers never drink decaf because they can’t handle the lack of "Beans."'
   }
