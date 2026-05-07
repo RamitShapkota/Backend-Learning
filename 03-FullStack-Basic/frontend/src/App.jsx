@@ -3,14 +3,13 @@ import axios from 'axios'
 import { useEffect } from 'react';
 
 function App() {
- const [jokes, setJoks] = useState([]);
+ const [jokes, setJokes] = useState([]);
 
  useEffect(() => {
-
   //add Proxy to avoid below long url
-  axios.get('http://http://localhost:3000/api/jokes')
+  axios.get('/api/jokes')
   .then((response)=>{
-    setJoks(response.data);
+    setJokes(response.data);
   })
   .catch((error)=>{
     console.log(error);
@@ -19,16 +18,16 @@ function App() {
 
   return (
     <>
-      <h1>Full Stack Application</h1>
+      <h1>Full Stack Application done by ramit</h1>
       <p>JOKES: {jokes.length}</p>
 
       {
-        jokes.map((joke,index) => {
+        jokes.map((joke,index) => (
           <div key={joke.id}>
             <h3>{joke.title}</h3> 
             <p>{joke.content}</p>
           </div>
-        })
+        ))
       }
     </>
   )
