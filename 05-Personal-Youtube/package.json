@@ -1,0 +1,23 @@
+{
+  "name": "05-personal-youtube",
+  "version": "1.0.0",
+  "description": "complete complex backend application with covering all advanced concept ",
+  "keywords": [
+    "javascript",
+    "backend"
+  ],
+  "license": "ISC",
+  "author": "Ramit Sonar",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
