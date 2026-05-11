@@ -1,22 +1,23 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config({
-    path: './.env'
-})
-
+  path: "./.env",
+});
 
 import express from "express";
-import cors from 'cors';
-import cookieParser from 'cookie-parser'
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
-const app = express()
+const app = express();
 
-app.use(cors({
-    origin:process.env.CORS_ORIGIN,
-    credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+  })
+);
 
-app.use(express.json({limit: "16kb"})) //allow json
-app.use(express.urlencoded({extended: true, limit: "16kb"}))//for url
-app.use(express.static("public"))
-app.use(cookieParser())
-export { app }
+app.use(express.json({ limit: "16kb" })); //allow json
+app.use(express.urlencoded({ extended: true, limit: "16kb" })); //for url
+app.use(express.static("public"));
+app.use(cookieParser());
+export { app };
