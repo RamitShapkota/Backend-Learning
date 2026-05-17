@@ -6,6 +6,11 @@ const asyncHandler = (requestHandler) => {
 
 export { asyncHandler };
 
+// used for ->
+// 1.routes
+// 2.controllers
+// 3.middleware
+
 // const asyncHandler = (fn) => async (req, res, next) => {
 //     try {
 //         await fn(req,res,next)
