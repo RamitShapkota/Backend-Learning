@@ -23,7 +23,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // 3. TEXT VALIDATION: Check if any required field is missing or empty
   if (
-    [fullName, email, username, password].some((field) => field?.trim() === "")
+    [fullName, email, username, password].some(
+      (field) => !field || field?.trim() === ""
+    )
   ) {
     deleteTempFile(avatarLocalPath);
     deleteTempFile(coverImageLocalPath);
@@ -39,8 +41,8 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // 5. DUPLICATE CHECK: Check if user with same username OR email already exists
-  const existedUser = await User?.findOne({
-    $or: [{ username }, { email }],
+  const existedUser = await User.findOne({
+    $or: [{ username: username.toLowerCase() }, { email: email.toLowerCase() }],
   });
   if (existedUser) {
     deleteTempFile(avatarLocalPath);
@@ -57,7 +59,12 @@ const registerUser = asyncHandler(async (req, res) => {
   // 7. CLOUD UPLOAD: Upload files to Cloudinary
   // Note: uploadOnCloudinary already handles disk cleanup after upload (success or fail)
   const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
+  let coverImage;
+
+  if (coverImageLocalPath) {
+    coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  }
 
   // 8. CLOUD UPLOAD VALIDATION: Confirm avatar was uploaded successfully
   if (!avatar) {
@@ -76,7 +83,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   // 10. SANITIZE DATA: Fetch created user without sensitive fields
-  const createdUser = await User?.findById(user._id).select(
+  const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
 
