@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import fs from "fs";
+import validator from "validator";
 
 // Helper to safely delete temp files from disk
 const deleteTempFile = (filePath) => {
@@ -32,9 +33,9 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  // 4. EMAIL SYNTAX VALIDATION: Verify email structure using Regex
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!emailRegex.test(email.trim())) {
+  // 4. EMAIL SYNTAX VALIDATION: Verify email structure using validator package
+
+  if (!validator.isEmail(email)) {
     deleteTempFile(avatarLocalPath);
     deleteTempFile(coverImageLocalPath);
     throw new ApiError(400, "Invalid email");
