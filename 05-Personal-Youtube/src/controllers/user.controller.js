@@ -126,14 +126,18 @@ const loginUser = asyncHandler(async (req, res) => {
   //send access and  refresh token in cookie
   //send response
 
-  const { email, username, password } = req.body;
+  console.log(req.body);
+  const { email, username, password } = req.body || {};
 
-  if (!username || !email || !password) {
+  if (!(username || email) || !password) {
     throw new ApiError(400, "Username/email and password are required");
   }
 
   const user = await User.findOne({
-    $or: [{ username: username.toLowerCase() }, { email: email.toLowerCase() }],
+    $or: [
+      username ? { username: username.toLowerCase() } : null,
+      email ? { email: email.toLowerCase() } : null,
+    ].filter(Boolean),
   });
 
   if (!user) {
@@ -176,20 +180,18 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-
 const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
       $set: {
-        refreshToken: undefined  //remove from database
-      }
-
+        refreshToken: undefined, //remove from database
+      },
     },
     {
-      new: true
+      new: true,
     }
-  )
+  );
 
   const options = {
     httpOnly: true,
@@ -197,13 +199,10 @@ const logoutUser = asyncHandler(async (req, res) => {
   };
 
   return res
-  .status(200)
-  .clearCookie("accessToken",options)
-  .clearCookie("refreshToken",options)
-  .json(
-    new ApiResponse(200, {}, "User logged Out")
-  )
-
-})
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"));
+});
 
 export { registerUser, loginUser, logoutUser };
