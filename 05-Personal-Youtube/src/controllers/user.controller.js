@@ -16,8 +16,8 @@ const deleteTempFile = (filePath) => {
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken =await user.generateAccessToken();
+    const refreshToken =await user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
@@ -154,9 +154,11 @@ const loginUser = asyncHandler(async (req, res) => {
     user._id
   );
 
+
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
+
 
   const options = {
     httpOnly: true,

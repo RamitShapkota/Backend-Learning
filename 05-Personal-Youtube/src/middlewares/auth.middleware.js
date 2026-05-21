@@ -5,17 +5,20 @@ import { User } from "../models/user.model.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
+
+    
     //Extract Token
     const token =
       req.cookies?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
-      throw new ApiError(401, "Unauthorized request");
+    if (!token || typeof token !== "string") {
+      throw new ApiError(401, "Invalid token format");
     }
 
     // Verify JWT Token
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+
 
     //Find User From Database
     const user = await User.findById(decodedToken?._id).select(
@@ -35,17 +38,20 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
   }
 });
 
-//This middleware protects private routes by checking whether the user is logged in with a valid JWT token.
 
-// Where We Use It
+/*
+This middleware protects private routes by checking whether the user is logged in with a valid JWT token.
 
-// Example routes:
+Where We Use It
 
-// router.get("/profile", verifyJWT, getUserProfile)
+Example routes:
 
-// router.post("/upload", verifyJWT, uploadVideo)
+router.get("/profile", verifyJWT, getUserProfile)
 
-// router.delete("/tweet/:id", verifyJWT, deleteTweet)
+router.post("/upload", verifyJWT, uploadVideo)
+
+router.delete("/tweet/:id", verifyJWT, deleteTweet)
+*/
 
 /*
 Complete Authentication Flow
