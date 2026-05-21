@@ -1,7 +1,7 @@
-import { ApiError } from "../utils/ApiError";
-import { asyncHandler } from "../utils/asyncHandler";
+import { ApiError } from "../utils/ApiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
-import {User} from "../models/user.model"
+import {User} from "../models/user.model.js"
 
 
 export const verifyJWT = asyncHandler(async (req,res,next) => {
@@ -26,11 +26,11 @@ export const verifyJWT = asyncHandler(async (req,res,next) => {
        }
     
        //Attach user to req.user
-       req.user = user;
+       req.user = user; //You are attaching authenticated user information into request object.
        next()
     
     } catch (error) {
-        throw new ApiError(401, "Invalid or expired token");
+        throw new ApiError(401, error?.message  ||"Invalid or expired token");
     }
 })
 
