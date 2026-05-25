@@ -5,8 +5,6 @@ import { User } from "../models/user.model.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
-
-    
     //Extract Token
     const token =
       req.cookies?.accessToken ||
@@ -17,8 +15,6 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
 
     // Verify JWT Token
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
-
 
     //Find User From Database
     const user = await User.findById(decodedToken?._id).select(
@@ -37,7 +33,6 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, error?.message || "Invalid or expired token");
   }
 });
-
 
 /*
 This middleware protects private routes by checking whether the user is logged in with a valid JWT token.
