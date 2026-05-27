@@ -259,66 +259,119 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-const changeCurrentPassword = asyncHandler(async(req,res) => {
-  const {oldPassword, newPassword} = req.body;
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
 
-   const user = await User.findById(req.user?._id);
+  const user = await User.findById(req.user?._id);
 
-   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
-   if (!isPasswordCorrect) {
+  if (!isPasswordCorrect) {
     throw new ApiError(401, "Invalid old password");
-   }
-
-   user.password = newPassword;
-   await user.save({validateBeforeSave: false})
-
-   return res
-   .status(200)
-   .json(
-    new ApiResponse(200,{},"Password Change Successfully")
-   )
-})
-
-const getCurrentUser = asyncHandler(async(req,res)=>{
-  return res
-  .status(200)
-  .json(
-    new ApiResponse(
-      200,
-      req.user,
-      "current user fatched successfully"
-    )
-  )
-})
-
-const updateAccountDetails = asyncHandler(async(req,res) => {
-  const { fullName, email} = req.body; //in production level write  different update controller 
-
-  if(!fullName || !email){
-    throw ApiError(400, "All fields are required")
   }
 
-  const user =await User.findByIdAndUpdate(
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password Change Successfully"));
+});
+
+const getCurrentUser = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "current user fatched successfully"));
+});
+
+const updateAccountDetails = asyncHandler(async (req, res) => {
+  const { fullName, email } = req.body; //in production level write  different update controller
+
+  if (!fullName || !email) {
+    throw ApiError(400, "All fields are required");
+  }
+
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
         fullName,
-        email
-      }
+        email,
+      },
     },
-    {new:true}
-  ).select("-password")
+    { new: true }
+  ).select("-password");
 
   return res
-  .status(200)
-  .json(
-    new ApiResponse(
-      200,
-      user,
-      "Account details updated successfully"
-    )
-  )
-})
+    .status(200)
+    .json(new ApiResponse(200, user, "Account details updated successfully"));
+});
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, };
+const updateUserAvatar = asyncHandler(async (req, res) => {
+  const avatarLocalPath = req.file?.path;
+
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "Avatar file is missing");
+  }
+
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
+
+  if (!avatar?.url) {
+    throw new ApiError(400, "problem while uploading on cloudinary");
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        avatar: avatar.url,
+      },
+    },
+    { new: true }
+  ).select("-Password");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "avatar is updated successfully"));
+});
+
+const updateUserCoverImage = asyncHandler(async (req, res) => {
+  const coverImageLocalPath = req.file?.path;
+
+  if (!coverImageLocalPath) {
+    throw new ApiError(400, "CoverImage is missing");
+  }
+
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
+  if (!coverImage?.url) {
+    throw new ApiError(400, "problem while uploading coverImage on cloudinary");
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        coverImage: coverImage.url,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("-password");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "coverImage is updated successfully"));
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  changeCurrentPassword,
+  updateAccountDetails,
+  updateUserAvatar,
+  updateUserCoverImage,
+};
