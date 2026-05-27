@@ -374,4 +374,5 @@ export {
   updateAccountDetails,
   updateUserAvatar,
   updateUserCoverImage,
+  getCurrentUser
 };
